@@ -29,11 +29,21 @@ export default function App() {
     refdni.current.focus();
 
   }
-  const calcular=()=>{
+
+  const calcular = (def) => {
     //se calculan valores
-    let nota1c=misnotas[nota1]
-    console.log(nota1c)
-  }
+    let notap = nota1 * 0.3 + nota2 * 0.35 + nota3 * 0.35;
+    def = notap;
+    setDefinitiva(def);
+
+    if (def >= 3) {
+      setObserv("Aprobo");
+    } else if (def == 2 && 2.94) {
+      setObserv("Habilitado");
+    } else {
+      setObserv("Desaprobo");
+    }
+  };
 
   const limpiar = () => {
     //limpiar el array
@@ -68,85 +78,78 @@ export default function App() {
     <View style={styles.container}>
       <Text>Calculando Notas</Text>
       <StatusBar style="auto" />
-      <View style={{margin:5, height:'auto', width:300}}>
+      <View style={{ margin: 5, height: "auto", width: 300 }}>
         <TextInput
-          placeholder='Identificacion'      
-          onChangeText={dni => setDni(dni)}
+          placeholder="Identificacion"
+          onChangeText={(dni) => setDni(dni)}
           value={dni}
           ref={refdni}
         />
 
         <TextInput
-          placeholder='Nombre'      
-          onChangeText={nombre => setNombre(nombre)}
+          placeholder="Nombre"
+          onChangeText={(nombre) => setNombre(nombre)}
           value={nombre}
         />
         <TextInput
-          placeholder='Asignatura'      
-          onChangeText={asig => setAsig(asig)}
+          placeholder="Asignatura"
+          onChangeText={(asig) => setAsig(asig)}
           value={asig}
         />
 
         <TextInput
-          placeholder='Nota 1'      
-          onChangeText={nota1 => setNota1(nota1)}
+          placeholder="Nota 1"
+          onChangeText={(nota1) => setNota1(nota1)}
           value={nota1}
-        /> 
+          maxLength={1}
+        />
         <TextInput
-          placeholder='Nota 2'      
-          onChangeText={nota2 => setNota2(nota2)}
+          placeholder="Nota 2"
+          onChangeText={(nota2) => setNota2(nota2)}
           value={nota2}
+          maxLength={1}
         />
         <TextInput
-          placeholder='Nota 3'      
-          onChangeText={nota3 => setNota3(nota3)}
+          placeholder="Nota 3"
+          onChangeText={(nota3) => setNota3(nota3)}
           value={nota3}
+          maxLength={1}
         />
         <TextInput
-          placeholder='Definitiva'      
-          onChangeText={def => setDefinitiva(def)}
+          placeholder="Definitiva"
+          onChangeText={(def) => setDefinitiva(def)}
           value={definitiva}
+          editable={false}
         />
         <TextInput
-          placeholder='Observacion'      
-          onChangeText={obv => setObserv(obv)}
+          placeholder="Observacion"
+          onChangeText={(obv) => setObserv(obv)}
           value={observ}
+          editable={false}
         />
       </View>
       {/* botones */}
-      <View style={{flexDirection: 'row'}}>
+      <View style={{ flexDirection: "row" }}>
         {/* Calcular */}
-        <TouchableOpacity
-          onPress={calcular}
-          style={botones.boton}
-        >
-            <Text style={{color:'white', padding:5}}>Calcular</Text>
+        <TouchableOpacity onPress={calcular} style={botones.boton}>
+          <Text style={{ color: "white", padding: 5 }}>Calcular</Text>
         </TouchableOpacity>
 
         {/* Guardar */}
-        <TouchableOpacity
-          onPress={guardar}
-          style={botones.boton}
-        >
-            <Text style={{color:'white', padding:5}}>Guardar</Text>
+        <TouchableOpacity onPress={guardar} style={botones.boton}>
+          <Text style={{ color: "white", padding: 5 }}>Guardar</Text>
         </TouchableOpacity>
 
         {/* BUSCAR */}
         <br></br>
-        <TouchableOpacity
-          onPress={buscar}
-          style={botones.boton}
-        >
-            <Text style={{color:'white', padding:5}}>Buscar</Text>
+        <TouchableOpacity onPress={buscar} style={botones.boton}>
+          <Text style={{ color: "white", padding: 5 }}>Buscar</Text>
         </TouchableOpacity>
-        
+
         {/* Limpiar */}
         <br></br>
-        <TouchableOpacity
-          onPress={limpiar}
-          style={botones.boton}
-        >
-            <Text style={{color:'white', padding:5}}>Limpiar</Text>
+        <TouchableOpacity onPress={limpiar} style={botones.boton}>
+          <Text style={{ color: "white", padding: 5 }}>Limpiar</Text>
         </TouchableOpacity>
 
         {/* Mostrar info 
