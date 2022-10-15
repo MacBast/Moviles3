@@ -134,8 +134,8 @@ export default function App() {
             
             <TextInput
               style={[styles.inpust, {
-                borderColor: errors.nombre?.type == "required" || errors.nombre?.type == "pattern" || errors.fullname?.type
-                  == "maxLength" || errors.fullname?.type == "minLength" ? 'red' : 'green' }]}
+                borderColor: errors.nombre?.type == "required" || errors.nombre?.type == "pattern" || errors.nombre?.type
+                  == "maxLength" || errors.nombre?.type == "minLength" ? 'red' : 'green' }]}
 
               placeholder="Nombre"
               onChangeText={(nombre) => setNombre(nombre)}
@@ -151,6 +151,7 @@ export default function App() {
         {errors.nombre?.type == "maxLength" && <Text style={{ color: 'red' }}> El nombre no puede exceder 30 caracteres</Text>}
         {errors.nombre?.type == "minLength" && <Text style={{ color: 'red' }}>El nombre minimo 3 caracteres</Text>}
         {errors.nombre?.type == "pattern" && <Text style={{ color: 'red' }}> El nombre solo con letras y espacios</Text>}
+
         {/* control del nombre FIN*/}
 
         <TextInput
@@ -184,10 +185,8 @@ export default function App() {
 
 
         <Controller control={control}
-
           rules={{ required: true, pattern: /^[0-5]+$/g }}
           render={({field:{onChange, onBlur, value}})=>(
-
             <TextInput
               style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota2?.type == "pattern"}]}
               placeholder="Nota 2"
@@ -198,7 +197,6 @@ export default function App() {
               maxLength = {1} 
               minLength = {1}
             />
-
           )}
           name="nota2"
         />
