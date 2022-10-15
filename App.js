@@ -2,6 +2,7 @@ import {useState, useEffect, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity,TextInput } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
+import { color, fontStyle, textAlign } from '@mui/system';
 
 export default function App() {
 
@@ -9,7 +10,6 @@ export default function App() {
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: { dni:'', nombre:'', asig:'', nota1:'',nota2:'',nota3:'' }
   })
-  //const onSubmit= ()=>(true);
   //
   const [dni, setDni] = useState('');
   const [nombre, setNombre] = useState('');
@@ -25,10 +25,6 @@ export default function App() {
 
   const onSubmit = () => {
     //Agregar datos al array a través del método setNotas para el array notas
-    let nvG=notas.forEach(()=>notas.length)
-    if (nvG != undefined) {
-      alert("rellenar datos")
-    }else{
       setNotas(misnotas => [...misnotas,{dni:dni,nombre:nombre,asig:asig,nota1:nota1,nota2:nota2,nota3:nota3,definitiva:definitiva,observ:observ}] );
       setDni('');
       setNombre('');
@@ -40,8 +36,6 @@ export default function App() {
       setObserv('');
       refdni.current.focus();
       console.log(notas)
-    }
-
   }
 
   const calcular = (def) => {
@@ -62,10 +56,10 @@ export default function App() {
   const limpiar = () => {
     //limpiar el array
     setNotas((misnotas) => [misnotas,{}] );
-    console.log(notas);
+    //console.log(notas);
     setDni("");
     setNombre("");
-    setAsig("");
+    setAsig('');
     setNota1("");
     setNota2("");
     setNota3("");
@@ -74,7 +68,7 @@ export default function App() {
 
   }
   
-  let buscar = () =>{
+  const buscar = () =>{
     let dnic = notas.find((not)=> not.dni == dni);
     if (dnic != undefined){
       setNombre(dnic.nombre);
@@ -90,10 +84,10 @@ export default function App() {
     }
   }
   return (
-    <View style={styles.container}>
-      <Text>Calculando Notas</Text>
+    <View style={[styles.container]}>
       <StatusBar style="auto" />
-      <View style={{ margin: 5, height: "auto", width: 300 }}>
+      <View style={{ margin: 5, height: "auto", width: 300 , backgroundColor:'#2F7568', borderRadius: 10, padding:10}}>
+      <Text style={styles.Text}>Calculando Notas</Text>
         
         {/* control del DNI */}
         <Controller control={control}
@@ -101,11 +95,11 @@ export default function App() {
             required: true, pattern: /^[0-9]+$/g, maxLength:10, minLength: 5
           }}
 
-          render={({ field: { onChange, onBlur, dni } }) => (
+          render={({ field: { onChange, onBlur } }) => (
             <TextInput
               style={[styles.inpust, {
                 borderColor: errors.dni?.type == "required" || errors.dni?.type == "pattern" || errors.dni?.type
-                  == "maxLength" || errors.dni?.type == "minLength" ? 'red' : 'green'
+                  == "maxLength" || errors.dni?.type == "minLength" ? 'red' : '#11A88C'
               }]}
               placeholder="Identificacion"
               onChangeText={(dni) => setDni(dni)}
@@ -129,19 +123,18 @@ export default function App() {
           rules={{
             required: true, pattern: /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$/g, maxLength:30, minLength: 3
           }}
-
-          render={({field:{onChange, onBlur, value}})=>(
+          render={({field:{onChange, onBlur}})=>(
             
             <TextInput
               style={[styles.inpust, {
                 borderColor: errors.nombre?.type == "required" || errors.nombre?.type == "pattern" || errors.nombre?.type
-                  == "maxLength" || errors.nombre?.type == "minLength" ? 'red' : 'green' }]}
+                  == "maxLength" || errors.nombre?.type == "minLength" ? 'red' : '#11A88C' }]}
 
               placeholder="Nombre"
               onChangeText={(nombre) => setNombre(nombre)}
               onChange={onChange}
               onBlur={onBlur}
-              value={value}
+              value={nombre}
             />
           )}
           name="nombre"
@@ -164,15 +157,15 @@ export default function App() {
 
         <Controller control={control}
           rules={{ required: true, pattern: /^[0-5]+$/g }}
-          render={({field:{onChange, onBlur, value}})=>(
+          render={({field:{onChange, onBlur }})=>(
 
             <TextInput
-              style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota1?.type == "pattern"}]}
+              style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota1?.type == "pattern"? 'red' : '#11A88C'}]}
               placeholder="Nota 1"
               onChangeText={(nota1) => setNota1(nota1)}
               onChange={onChange}
               onBlur={onBlur}
-              value={value}
+              value={nota1}
               maxLength={1}
               minLength={1}
             />
@@ -186,14 +179,14 @@ export default function App() {
 
         <Controller control={control}
           rules={{ required: true, pattern: /^[0-5]+$/g }}
-          render={({field:{onChange, onBlur, value}})=>(
+          render={({field:{onChange, onBlur}})=>(
             <TextInput
-              style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota2?.type == "pattern"}]}
+              style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota2?.type == "pattern"? 'red' : '#11A88C'}]}
               placeholder="Nota 2"
               onChangeText={(nota2) => setNota2(nota2)}
               onChange={onChange}
               onBlur={onBlur}
-              value={value}
+              value={nota2}
               maxLength = {1} 
               minLength = {1}
             />
@@ -206,15 +199,15 @@ export default function App() {
 
         <Controller control={control}
           rules={{ required: true, pattern: /^[0-5]+$/g }}
-          render={({field:{onChange, onBlur, value}})=>(
+          render={({field:{onChange, onBlur}})=>(
 
             <TextInput
-              style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota3?.type == "pattern" }]}
+              style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota3?.type == "pattern" ? 'red' : '#11A88C'}]}
               placeholder="Nota 3"
               onChangeText={(nota3) => setNota3(nota3)}
               onChange={onChange}
               onBlur={onBlur}
-              value={value}
+              value={nota3}
               maxLength={1}
               minLength={1}
             />
@@ -290,10 +283,18 @@ const styles = StyleSheet.create({
   inpust: {
     padding: 10,
     borderRadius: 10,
-    color: 'black',
+    color: 'white',
     marginBottom: 5,
-    borderWidth: 1,
-    borderColor: 'green'
+    borderWidth: 5,
+    borderColor: '#11A88C'
+  },
+  Text:{
+    justifyContent: 'center',
+    textAlign: 'center',
+    color: 'white',
+    marginBottom: 5,
+    fontWeight: 'bold',
+    fontSize: 30
   }
 });
 
