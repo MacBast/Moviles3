@@ -1,8 +1,16 @@
 import {useState, useEffect, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity,TextInput } from 'react-native';
+import { useForm, Controller } from 'react-hook-form';
 
 export default function App() {
+
+  //
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: { dni:'', nombre:'', asig:'', nota1:'',nota2:'',nota3:'' }
+  })
+  //const onSubmit= ()=>(true);
+  //
   const [dni, setDni] = useState('');
   const [nombre, setNombre] = useState('');
   const [asig, setAsig] = useState('');
@@ -15,18 +23,24 @@ export default function App() {
   // Referencias a elementos
   let refdni = useRef()
 
-  const guardar = () => {
+  const onSubmit = () => {
     //Agregar datos al array a través del método setNotas para el array notas
-    setNotas(misnotas => [...misnotas,{dni:dni,nombre:nombre,asig:asig,nota1:nota1,nota2:nota2,nota3:nota3,definitiva:definitiva,observ:observ}] );
-    setDni('');
-    setNombre('');
-    setAsig('');
-    setNota1('');
-    setNota2('');
-    setNota3('');
-    setDefinitiva('');
-    setObserv('');
-    refdni.current.focus();
+    let nvG=notas.forEach(()=>notas.length)
+    if (nvG != undefined) {
+      alert("rellenar datos")
+    }else{
+      setNotas(misnotas => [...misnotas,{dni:dni,nombre:nombre,asig:asig,nota1:nota1,nota2:nota2,nota3:nota3,definitiva:definitiva,observ:observ}] );
+      setDni('');
+      setNombre('');
+      setAsig('');
+      setNota1('');
+      setNota2('');
+      setNota3('');
+      setDefinitiva('');
+      setObserv('');
+      refdni.current.focus();
+      console.log(notas)
+    }
 
   }
 
@@ -47,20 +61,21 @@ export default function App() {
 
   const limpiar = () => {
     //limpiar el array
-    setNotas(misnotas => [misnotas,{}] );
-    //console.log(notas);
-    setDni('')
-    setNombre('')
-    setAsig('')
-    setNota1('')
-    setNota2('')
-    setNota3('')
-    setDefinitiva('')
-    setObserv('')
+    setNotas((misnotas) => [misnotas,{}] );
+    console.log(notas);
+    setDni("");
+    setNombre("");
+    setAsig("");
+    setNota1("");
+    setNota2("");
+    setNota3("");
+    setDefinitiva("");
+    setObserv("");
+
   }
   
-  let buscar = (nombuscar) =>{
-    let dnic = notas.find(not => not.dni == dni);
+  let buscar = () =>{
+    let dnic = notas.find((not)=> not.dni == dni);
     if (dnic != undefined){
       setNombre(dnic.nombre);
       setAsig(dnic.asig)
@@ -79,54 +94,156 @@ export default function App() {
       <Text>Calculando Notas</Text>
       <StatusBar style="auto" />
       <View style={{ margin: 5, height: "auto", width: 300 }}>
-        <TextInput
-          placeholder="Identificacion"
-          onChangeText={(dni) => setDni(dni)}
-          value={dni}
-          ref={refdni}
+        
+        {/* control del DNI */}
+        <Controller control={control}
+          rules={{
+            required: true, pattern: /^[0-9]+$/g, maxLength:10, minLength: 5
+          }}
+
+          render={({ field: { onChange, onBlur, dni } }) => (
+            <TextInput
+              style={[styles.inpust, {
+                borderColor: errors.dni?.type == "required" || errors.dni?.type == "pattern" || errors.dni?.type
+                  == "maxLength" || errors.dni?.type == "minLength" ? 'red' : 'green'
+              }]}
+              placeholder="Identificacion"
+              onChangeText={(dni) => setDni(dni)}
+              onChange={onChange}
+              onBlur={onBlur}
+              value={dni}
+              keyboardType="numeric"
+              ref={refdni}
+            />
+
+          )}
+          name="dni"
         />
+        {errors.dni?.type == "required" && <Text style={{ color: 'red' }}> El DNI/Identificacion es obligatoria</Text>}
+        {errors.dni?.type == "maxLength" && <Text style={{ color: 'red' }}> El DNI no puede exceder 10 caracteres</Text>}
+        {errors.dni?.type == "minLength" && <Text style={{ color: 'red' }}> El DNI minimo 5 caracteres</Text>}
+        {errors.dni?.type == "pattern" && <Text style={{ color: 'red' }}> El DNI solo con Numeros</Text>}
+
+        {/* control del nombre */}
+        <Controller control={control}
+          rules={{
+            required: true, pattern: /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$/g, maxLength:30, minLength: 3
+          }}
+
+          render={({field:{onChange, onBlur, value}})=>(
+            
+            <TextInput
+              style={[styles.inpust, {
+                borderColor: errors.nombre?.type == "required" || errors.nombre?.type == "pattern" || errors.fullname?.type
+                  == "maxLength" || errors.fullname?.type == "minLength" ? 'red' : 'green' }]}
+
+              placeholder="Nombre"
+              onChangeText={(nombre) => setNombre(nombre)}
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value}
+            />
+          )}
+          name="nombre"
+
+        />
+        {errors.nombre?.type == "required" && <Text style={{ color: 'red' }}> El nombre es obligatorio</Text>}
+        {errors.nombre?.type == "maxLength" && <Text style={{ color: 'red' }}> El nombre no puede exceder 30 caracteres</Text>}
+        {errors.nombre?.type == "minLength" && <Text style={{ color: 'red' }}>El nombre minimo 3 caracteres</Text>}
+        {errors.nombre?.type == "pattern" && <Text style={{ color: 'red' }}> El nombre solo con letras y espacios</Text>}
+        {/* control del nombre FIN*/}
 
         <TextInput
-          placeholder="Nombre"
-          onChangeText={(nombre) => setNombre(nombre)}
-          value={nombre}
-        />
-        <TextInput
+          style={[styles.inpust]}
           placeholder="Asignatura"
           onChangeText={(asig) => setAsig(asig)}
           value={asig}
         />
 
-        <TextInput
-          placeholder="Nota 1"
-          onChangeText={(nota1) => setNota1(nota1)}
-          value={nota1}
-          maxLength={1}
+
+        <Controller control={control}
+          rules={{ required: true, pattern: /^[0-5]+$/g }}
+          render={({field:{onChange, onBlur, value}})=>(
+
+            <TextInput
+              style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota1?.type == "pattern"}]}
+              placeholder="Nota 1"
+              onChangeText={(nota1) => setNota1(nota1)}
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value}
+              maxLength={1}
+              minLength={1}
+            />
+
+          )}
+          name="nota1"
         />
-        <TextInput
-          placeholder="Nota 2"
-          onChangeText={(nota2) => setNota2(nota2)}
-          value={nota2}
-          maxLength={1}
+        {errors.nota1?.type == "required" && <Text style={{ color: 'red' }}> El Nota 1 es obligatoria</Text>}
+        {errors.nota1?.type == "pattern" && <Text style={{ color: 'red' }}>Nota Maxima es 5, Solo numeros.</Text>}
+
+
+        <Controller control={control}
+
+          rules={{ required: true, pattern: /^[0-5]+$/g }}
+          render={({field:{onChange, onBlur, value}})=>(
+
+            <TextInput
+              style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota2?.type == "pattern"}]}
+              placeholder="Nota 2"
+              onChangeText={(nota2) => setNota2(nota2)}
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value}
+              maxLength = {1} 
+              minLength = {1}
+            />
+
+          )}
+          name="nota2"
         />
-        <TextInput
-          placeholder="Nota 3"
-          onChangeText={(nota3) => setNota3(nota3)}
-          value={nota3}
-          maxLength={1}
+        {errors.nota2?.type == "required" && <Text style={{ color: 'red' }}> El Nota 2 es obligatoria</Text>}
+        {errors.nota2?.type == "pattern" && <Text style={{ color: 'red' }}>Nota Maxima es 5, Solo numeros.</Text>}
+
+
+        <Controller control={control}
+          rules={{ required: true, pattern: /^[0-5]+$/g }}
+          render={({field:{onChange, onBlur, value}})=>(
+
+            <TextInput
+              style={[styles.inpust, {borderColor: errors.nota1?.type=="required" || errors.nota3?.type == "pattern" }]}
+              placeholder="Nota 3"
+              onChangeText={(nota3) => setNota3(nota3)}
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value}
+              maxLength={1}
+              minLength={1}
+            />
+          )}
+          name="nota3"
         />
+        {errors.nota3?.type == "required" && <Text style={{ color: 'red' }}> El Nota 3 es obligatoria</Text>}
+        {errors.nota3?.type == "pattern" && <Text style={{ color: 'red' }}> Nota Maxima es 5, Solo numeros.</Text>}
+
+
+
+
         <TextInput
+          style={[styles.inpust]}
           placeholder="Definitiva"
           onChangeText={(def) => setDefinitiva(def)}
           value={definitiva}
           editable={false}
         />
         <TextInput
+          style={[styles.inpust]}
           placeholder="Observacion"
           onChangeText={(obv) => setObserv(obv)}
           value={observ}
           editable={false}
         />
+
       </View>
       {/* botones */}
       <View style={{ flexDirection: "row" }}>
@@ -136,7 +253,7 @@ export default function App() {
         </TouchableOpacity>
 
         {/* Guardar */}
-        <TouchableOpacity onPress={guardar} style={botones.boton}>
+        <TouchableOpacity onPress={handleSubmit(onSubmit)} style={botones.boton}>
           <Text style={{ color: "white", padding: 5 }}>Guardar</Text>
         </TouchableOpacity>
 
@@ -151,21 +268,13 @@ export default function App() {
         <TouchableOpacity onPress={limpiar} style={botones.boton}>
           <Text style={{ color: "white", padding: 5 }}>Limpiar</Text>
         </TouchableOpacity>
-
-        {/* Mostrar info 
-        <Text>{'\n'}</Text>
-        <View>
-        {
-            notas.map(not => {
-              return (
-                <View style={{flex:1, flexDirection:'row',flexWrap:'wrap'}}>
-                  <Text style={{marginRight:10}}>{not.nombre}</Text>
-                  <Text>{new Intl.NumberFormat('es-CO').format(not.nota)}</Text>
-                </View>
-              );
-            })
-          }
-        </View>*/}
+        
+        {/*
+          <br></br>
+          <TouchableOpacity onPress={handleSubmit(onSubmit)} style={botones.boton}>
+            <Text style={{color:"white", padding: 5}}>Validar Datos</Text>
+          </TouchableOpacity>
+        */}
       </View>
     </View>
   );
@@ -180,6 +289,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
      
   },
+  inpust: {
+    padding: 10,
+    borderRadius: 10,
+    color: 'black',
+    marginBottom: 5,
+    borderWidth: 1,
+    borderColor: 'green'
+  }
 });
 
 const botones= StyleSheet.create({
@@ -188,7 +305,9 @@ const botones= StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius:5, 
-    width:80, 
+    width:100, 
     margin: 2
   }
-})
+});
+
+
